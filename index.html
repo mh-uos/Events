@@ -9,10 +9,9 @@
     max-width: 1200px; 
     margin: 0 auto;
     display: grid;
-    /* This creates the responsive grid so cards sit side-by-side */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
     gap: 20px;
-    align-items: start;
+    /* Removed 'align-items: start;' so the cards stretch to equal heights! */
   }
   .event-card {
     background: #ffffff;
@@ -23,7 +22,12 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     text-decoration: none !important;
     color: inherit !important;
-    display: block;
+    
+    /* NEW: This ensures the card stretches to fill the grid space perfectly */
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+    box-sizing: border-box;
   }
   .event-card:hover {
     transform: translateY(-3px);
@@ -50,6 +54,7 @@
     color: #555;
     line-height: 1.6;
     margin: 0;
+    flex-grow: 1; /* Pushes everything to align nicely inside the stretching card */
   }
   
   /* --- Styling the built-in TargetConnect HTML --- */
@@ -58,7 +63,7 @@
     color: #1e293b;
   }
   
-  /* UPDATED: Added .entry-toDate to hide the End Date from the main text block! */
+  /* Hides the duplicate "Title", "Closest Future Date", and "End Date" */
   .entry-name, .entry-dynamicstrings_days, .entry-toDate {
     display: none !important;         
   }
