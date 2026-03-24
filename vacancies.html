@@ -10,7 +10,7 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 16px; /* Space between list items */
+    gap: 16px; 
   }
   .vacancy-item {
     background: #ffffff;
@@ -25,7 +25,7 @@
     display: block;
   }
   .vacancy-item:hover {
-    transform: translateX(6px); /* Smooth slide to the right */
+    transform: translateX(6px); 
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
   .vacancy-header {
@@ -34,33 +34,62 @@
     align-items: flex-start;
     flex-wrap: wrap;
     gap: 15px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
   .vacancy-title {
     font-size: 1.25rem;
     font-weight: 600;
     color: #2c3e50;
     margin: 0;
-    flex: 1; /* Pushes the date pill to the right */
+    flex: 1; 
     min-width: 250px;
   }
-  .vacancy-date {
-    font-size: 0.85rem;
-    color: #c2410c; /* A slightly warmer color to signify urgency */
-    background: #ffedd5;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: 600;
-    white-space: nowrap; /* Stops the date text from wrapping to two lines */
+  
+  /* --- Custom Pill Styling --- */
+  .vacancy-pills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
   }
+  .pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  /* Red pill for closing date */
+  .pill-closing {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  /* Soft orange pill for Employer */
+  .pill-employer {
+    background: #ffedd5;
+    color: #c2410c;
+  }
+  /* Soft blue pill for Opportunity Type */
+  .pill-type {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  /* --- Description Styling --- */
   .vacancy-desc {
     font-size: 0.95rem;
     color: #555;
     line-height: 1.6;
     margin: 0;
+    /* Limits description to 3 lines and adds "..." */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   
-  /* --- Styling the built-in TargetConnect HTML --- */
+  /* Hides the built-in labels so they don't duplicate */
   .feed-entry-label {
     font-weight: 600;      
     color: #1e293b;
@@ -106,7 +135,7 @@
          return;
       }
 
-      // Loop through the first 6 vacancies
+      // Loop through the first 6 vacancies (Change the 6 to 10 or 15 if you want more!)
       Array.from(items).slice(0, 6).forEach(item => {
         
         const title = item.querySelector("title") ? item.querySelector("title").textContent : "Vacancy";
@@ -117,39 +146,57 @@
             rawDescription = item.querySelector("description").innerHTML;
         }
 
-        // Smart Search for "Closing Date" and "Title"
-        let highlightedDate = "";
+        // --- Smart Search for our Custom Pills ---
+        let closingDate = "";
+        let employerName = "";
+        let opportunityType = "";
+        
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = rawDescription;
         
         const labels = tempDiv.querySelectorAll('.feed-entry-label');
         labels.forEach(label => {
             const labelText = label.textContent.toLowerCase();
+            const valueSpan = label.parentElement.querySelector('.feed-entry-value');
             
-            // Extract the Closing Date
+            // 1. Extract Closing Date
             if (labelText.includes('closing date')) {
-                const valueSpan = label.parentElement.querySelector('.feed-entry-value');
-                if (valueSpan) {
-                    highlightedDate = valueSpan.textContent.trim();
-                }
+                if (valueSpan) closingDate = valueSpan.textContent.trim();
                 label.parentElement.style.display = 'none'; 
             }
-            
-            // Hide the duplicate Title
-            if (labelText.includes('title')) {
+            // 2. Extract Employer Name
+            else if (labelText.includes('employer')) {
+                if (valueSpan) employerName = valueSpan.textContent.trim();
+                label.parentElement.style.display = 'none'; 
+            }
+            // 3. Extract Type of Opportunity
+            else if (labelText.includes('opportunity')) {
+                if (valueSpan) opportunityType = valueSpan.textContent.trim();
+                label.parentElement.style.display = 'none'; 
+            }
+            // 4. Hide duplicate Title
+            else if (labelText.includes('title')) {
                 label.parentElement.style.display = 'none';
             }
         });
 
+        // Save the cleaned-up description
         rawDescription = tempDiv.innerHTML;
 
-        // Build the HTML list item with the new side-by-side header
+        // Build the HTML list item with our colored pills
         const card = `
           <a href="${link}" target="_blank" class="vacancy-item">
+            
             <div class="vacancy-header">
                 <h3 class="vacancy-title">${title}</h3>
-                ${highlightedDate ? `<span class="vacancy-date">⏳ Closes: ${highlightedDate}</span>` : ''}
+                ${closingDate ? `<span class="pill pill-closing">⏳ Closes: ${closingDate}</span>` : ''}
             </div>
+            
+            <div class="vacancy-pills-container">
+                ${employerName ? `<span class="pill pill-employer">🏢 ${employerName}</span>` : ''}
+                ${opportunityType ? `<span class="pill pill-type">💼 ${opportunityType}</span>` : ''}
+            </div>
+
             <div class="vacancy-desc">${rawDescription}</div>
           </a>
         `;
