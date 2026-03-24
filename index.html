@@ -4,12 +4,14 @@
     margin: 0;
     padding: 20px;
   }
-  .event-feed-container {
+.event-feed-container {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    max-width: 800px;
+    max-width: 1200px; /* Widened this so multiple cards can fit */
     margin: 0 auto;
     display: grid;
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* THIS is the magic grid line! */
+    gap: 20px;
+    align-items: start; /* Keeps cards looking neat even if descriptions are different lengths */
   }
   .event-card {
     background: #ffffff;
