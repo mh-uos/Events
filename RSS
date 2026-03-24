@@ -1,0 +1,142 @@
+<style>
+  body {
+    background-color: #f8fafc; 
+    margin: 0;
+    padding: 20px;
+  }
+  .event-feed-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    gap: 16px;
+  }
+  .event-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none !important;
+    color: inherit !important;
+    display: block;
+  }
+  .event-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  }
+  .event-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+  }
+  .event-date {
+    font-size: 0.85rem;
+    color: #475569;
+    margin-bottom: 12px;
+    display: inline-block;
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .event-desc {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  /* --- Styling the built-in TargetConnect HTML --- */
+  .feed-entry-label {
+    font-weight: 600;      
+    color: #1e293b;
+  }
+  .entry-name {
+    display: none;         
+  }
+  .feed-entry {
+    display: block;
+    margin-bottom: 8px;    
+  }
+  .event-desc br { 
+    display: none; 
+  }
+  
+  .loading-text {
+    text-align: center;
+    color: #64748b;
+    font-style: italic;
+  }
+</style>
+
+<div class="event-feed-container" id="event-feed-container">
+   <p class="loading-text">Loading events...</p>
+</div>
+
+<script>
+  const rssUrl = 'https://sunderland.targetconnect.net/content/rss/allevents';
+  
+  // NEW: Swapped to a much more reliable proxy
+  const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(rssUrl)}`;
+
+  fetch(proxyUrl)
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.text(); // Get the raw XML text
+    })
+    .then(str => {
+      const container = document.getElementById('event-feed-container');
+      container.innerHTML = ''; 
+      
+      // Parse the raw XML data manually
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(str, "text/xml");
+      const items = xmlDoc.querySelectorAll("item");
+
+      if (!items || items.length === 0) {
+         container.innerHTML = '<p class="loading-text">No upcoming events found.</p>';
+         return;
+      }
+
+      // Loop through the first 6 items
+      Array.from(items).slice(0, 6).forEach(item => {
+        
+        // Extract the pieces we need
+        const title = item.querySelector("title") ? item.querySelector("title").textContent : "Event";
+        const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
+        
+        // Format date
+        const pubDateNode = item.querySelector("pubDate") ? item.querySelector("pubDate").textContent : null;
+        const pubDate = new Date(pubDateNode);
+        const dateString = pubDate.toLocaleDateString('en-GB', { 
+          weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' 
+        });
+
+        // Get the FULL description, uncut
+        let rawDescription = item.querySelector("description") ? item.querySelector("description").textContent : "";
+        
+        // Fallback check just in case the browser parses the XML differently
+        if (!rawDescription.includes("<span") && item.querySelector("description") && item.querySelector("description").innerHTML.includes("<span")) {
+            rawDescription = item.querySelector("description").innerHTML;
+        }
+
+        // Build the HTML card
+        const card = `
+          <a href="${link}" target="_blank" class="event-card">
+            <h3 class="event-title">${title}</h3>
+            <span class="event-date">📅 Added: ${dateString}</span>
+            <div class="event-desc">${rawDescription}</div>
+          </a>
+        `;
+        
+        container.innerHTML += card;
+      });
+    })
+    .catch(error => {
+      document.getElementById('event-feed-container').innerHTML = '<p class="loading-text">Sorry, error loading events.</p>';
+      console.error('Error fetching RSS:', error);
+    });
+</script>
