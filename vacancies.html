@@ -15,7 +15,7 @@
   .vacancy-item {
     background: #ffffff;
     border: 1px solid #e8eaf0;
-    border-left: 6px solid #0069fa; /* Sunderland blue accent stripe */
+    border-left: 6px solid #0069fa;
     border-radius: 8px;
     padding: 20px 25px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
@@ -60,21 +60,9 @@
     white-space: nowrap;
     display: inline-block;
   }
-  /* Red pill for closing date */
-  .pill-closing {
-    background: #fee2e2;
-    color: #991b1b;
-  }
-  /* Soft orange pill for Employer */
-  .pill-employer {
-    background: #ffedd5;
-    color: #c2410c;
-  }
-  /* Soft blue pill for Opportunity Type */
-  .pill-type {
-    background: #dbeafe;
-    color: #1e40af;
-  }
+  .pill-closing { background: #fee2e2; color: #991b1b; }
+  .pill-employer { background: #ffedd5; color: #c2410c; }
+  .pill-type { background: #dbeafe; color: #1e40af; }
 
   /* --- Description Styling --- */
   .vacancy-desc {
@@ -82,31 +70,17 @@
     color: #555;
     line-height: 1.6;
     margin: 0;
-    /* Limits description to 3 lines and adds "..." */
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
   
-  /* Hides the built-in labels so they don't duplicate */
-  .feed-entry-label {
-    font-weight: 600;      
-    color: #1e293b;
-  }
-  .feed-entry {
-    display: block;
-    margin-bottom: 6px;    
-  }
-  .vacancy-desc br { 
-    display: none; 
-  }
+  .feed-entry-label { font-weight: 600; color: #1e293b; }
+  .feed-entry { display: block; margin-bottom: 6px; }
+  .vacancy-desc br { display: none; }
   
-  .loading-text {
-    text-align: center;
-    color: #64748b;
-    font-style: italic;
-  }
+  .loading-text { text-align: center; color: #64748b; font-style: italic; }
 </style>
 
 <div class="vacancy-list-container" id="vacancy-feed-container">
@@ -114,13 +88,11 @@
 </div>
 
 <script>
-  // NEW CACHE-BUSTER: Generates a unique timestamp to force a live refresh
   const cacheBuster = new Date().getTime(); 
   const rssUrl = `https://sunderland.targetconnect.net/content/rss/allvacanciesdigiscreen?cb=${cacheBuster}`;
-  
-  const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(rssUrl)}`;
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
 
-  fetch(proxyUrl)
+  fetch(proxyUrl, { cache: 'no-store' })
     .then(response => {
       if (!response.ok) throw new Error('Network response was not ok');
       return response.text(); 
@@ -138,9 +110,8 @@
          return;
       }
 
-      // Loop through the first 10 vacancies
-      Array.from(items).slice(0, 10).forEach(item => {
-        
+      // Step 1: Extract all the data from EVERY item first
+      let allVacancies = Array.from(items).map(item => {
         const title = item.querySelector("title") ? item.querySelector("title").textContent : "Vacancy";
         const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
 
@@ -149,7 +120,6 @@
             rawDescription = item.querySelector("description").innerHTML;
         }
 
-        // --- Smart Search for our Custom Pills ---
         let closingDate = "";
         let employerName = "";
         let opportunityType = "";
@@ -162,48 +132,63 @@
             const labelText = label.textContent.toLowerCase();
             const valueSpan = label.parentElement.querySelector('.feed-entry-value');
             
-            // 1. Extract Closing Date
             if (labelText.includes('closing date')) {
                 if (valueSpan) closingDate = valueSpan.textContent.trim();
                 label.parentElement.style.display = 'none'; 
-            }
-            // 2. Extract Employer Name
-            else if (labelText.includes('employer')) {
+            } else if (labelText.includes('employer')) {
                 if (valueSpan) employerName = valueSpan.textContent.trim();
                 label.parentElement.style.display = 'none'; 
-            }
-            // 3. Extract Type of Opportunity
-            else if (labelText.includes('opportunity')) {
+            } else if (labelText.includes('opportunity')) {
                 if (valueSpan) opportunityType = valueSpan.textContent.trim();
                 label.parentElement.style.display = 'none'; 
-            }
-            // 4. Hide duplicate Title
-            else if (labelText.includes('title')) {
+            } else if (labelText.includes('title')) {
                 label.parentElement.style.display = 'none';
             }
         });
 
-        // Save the cleaned-up description
-        rawDescription = tempDiv.innerHTML;
+        // Figure out the date mathematically for sorting
+        let timestamp = Infinity; // If there is no date, push it to the bottom
+        if (closingDate) {
+            // TargetConnect sometimes uses "at" (e.g., 25-Mar-2026 at 10:40). We remove it so JS can read it.
+            let cleanDateStr = closingDate.replace(' at ', ' ');
+            let parsedDate = new Date(cleanDateStr);
+            if (!isNaN(parsedDate.getTime())) {
+                timestamp = parsedDate.getTime();
+            }
+        }
 
-        // Build the HTML list item with our colored pills
+        return {
+            title: title,
+            link: link,
+            closingDate: closingDate,
+            employerName: employerName,
+            opportunityType: opportunityType,
+            cleanDesc: tempDiv.innerHTML,
+            timestamp: timestamp // The hidden sorting number
+        };
+      });
+
+      // Step 2: Sort the list! Smallest timestamp (soonest closing) goes to the top.
+      allVacancies.sort((a, b) => a.timestamp - b.timestamp);
+
+      // Step 3: Loop through only the top 10 items of our newly sorted list
+      allVacancies.slice(0, 10).forEach(job => {
         const card = `
-          <a href="${link}" target="_blank" class="vacancy-item">
+          <a href="${job.link}" target="_blank" class="vacancy-item">
             
             <div class="vacancy-header">
-                <h3 class="vacancy-title">${title}</h3>
-                ${closingDate ? `<span class="pill pill-closing">⏳ Closes: ${closingDate}</span>` : ''}
+                <h3 class="vacancy-title">${job.title}</h3>
+                ${job.closingDate ? `<span class="pill pill-closing">⏳ Closes: ${job.closingDate}</span>` : ''}
             </div>
             
             <div class="vacancy-pills-container">
-                ${employerName ? `<span class="pill pill-employer">🏢 ${employerName}</span>` : ''}
-                ${opportunityType ? `<span class="pill pill-type">💼 ${opportunityType}</span>` : ''}
+                ${job.employerName ? `<span class="pill pill-employer">🏢 ${job.employerName}</span>` : ''}
+                ${job.opportunityType ? `<span class="pill pill-type">💼 ${job.opportunityType}</span>` : ''}
             </div>
 
-            <div class="vacancy-desc">${rawDescription}</div>
+            <div class="vacancy-desc">${job.cleanDesc}</div>
           </a>
         `;
-        
         container.innerHTML += card;
       });
     })
