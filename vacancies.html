@@ -88,9 +88,12 @@
 </div>
 
 <script>
+  // Cache-buster to force a live update
   const cacheBuster = new Date().getTime(); 
   const rssUrl = `https://sunderland.targetconnect.net/content/rss/allvacanciesdigiscreen?cb=${cacheBuster}`;
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+  
+  // Switched BACK to the fast, reliable corsproxy!
+  const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(rssUrl)}`;
 
   fetch(proxyUrl, { cache: 'no-store' })
     .then(response => {
@@ -149,7 +152,6 @@
         // Figure out the date mathematically for sorting
         let timestamp = Infinity; // If there is no date, push it to the bottom
         if (closingDate) {
-            // TargetConnect sometimes uses "at" (e.g., 25-Mar-2026 at 10:40). We remove it so JS can read it.
             let cleanDateStr = closingDate.replace(' at ', ' ');
             let parsedDate = new Date(cleanDateStr);
             if (!isNaN(parsedDate.getTime())) {
