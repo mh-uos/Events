@@ -10,45 +10,84 @@
             display: flex; flex-direction: column; height: 100vh; box-sizing: border-box;
         }
         
-        /* --- Tool Banner (Sunderland-inspired) --- */
+        /* --- Tool Banner (True Sunderland Style) --- */
         .tool-header {
-            /* Vibrant multi-color gradient from Sunderland style */
-            background: linear-gradient(135deg, #0069fa 0%, #00d2ff 30%, #ff7533 60%, #f73363 100%);
+            background-color: #0069fa; 
+            background-image: url('https://cdn.groupgti.com/unlayer/ul8009g9t9i94007muadib91/1773744597981-Corner-Sparks-green.png');
+            background-position: right center;
+            background-repeat: no-repeat;
+            background-size: contain;
             color: #ffffff;
+            padding: 40px 50px;
             position: relative;
-            padding: 30px 40px 100px 40px; /* Added padding-bottom for the wave to overlap */
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             z-index: 10;
         }
-        .tool-header h1 { margin: 0; font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; color: white; }
-        .tool-header p { margin: 5px 0 0 0; color: white; opacity: 0.9; font-size: 1rem; }
         
-        /* SVG Wave Separator (multi-layered) */
-        .header-wave {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 90px;
-            overflow: hidden;
-            line-height: 0;
-            transform: rotate(0deg);
-        }
-        .header-wave svg {
+        .header-content {
             position: relative;
-            display: block;
-            width: calc(100% + 1.3px);
-            height: 100%;
+            z-index: 2;
+            max-width: 800px;
         }
-        .header-wave .shape-fill { fill: #f4f4f9; } /* Should match body BG color */
+
+        .tool-header h1 { 
+            margin: 0; 
+            font-size: 2.4rem; 
+            font-weight: 800; 
+            letter-spacing: -0.5px; 
+            color: white; 
+        }
         
-        .header-actions { display: flex; align-items: center; gap: 15px; margin-top: 15px; }
-        .badge { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
-        .how-to-use-btn { background: #16a34a; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; transition: background-color 0.2s; }
-        .how-to-use-btn:hover { background-color: #15803d; }
+        /* The signature Sunderland horizontal line */
+        .header-divider {
+            height: 2px;
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 650px;
+            margin: 15px 0;
+        }
+
+        .tool-header p { 
+            margin: 0; 
+            color: white; 
+            font-size: 1.1rem; 
+        }
+        
+        .header-actions { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-top: 25px; 
+        }
+        
+        .badge { 
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid rgba(255,255,255,0.4); 
+            color: white; 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            font-weight: bold; 
+        }
+        
+        .how-to-use-btn { 
+            background: #ffffff; 
+            color: #0069fa; 
+            border: none; 
+            padding: 8px 20px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 0.95rem; 
+            transition: background-color 0.2s, transform 0.1s; 
+        }
+        .how-to-use-btn:hover { 
+            background-color: #f1f5f9; 
+            transform: translateY(-1px);
+        }
 
         /* --- Main Layout --- */
-        .workspace { display: flex; gap: 30px; padding: 25px; flex-grow: 1; overflow: hidden; margin-top: -30px; /* pull up contents under wave */}
+        .workspace { display: flex; gap: 30px; padding: 25px; flex-grow: 1; overflow: hidden; }
         .panel {
             background: #ffffff; border-radius: 12px; padding: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex: 1;
@@ -134,20 +173,15 @@
 <body>
 
     <header class="tool-header">
-        <div>
+        <div class="header-content">
             <h1>Mike's Amazing Custom Pane Maker</h1>
+            <div class="header-divider"></div>
             <p>Generate responsive, targeted banners for TargetConnect using Velocity logic.</p>
-        </div>
-        <div class="header-actions">
-            <span class="badge">Universal Edition v4.0</span>
-            <button class="how-to-use-btn" onclick="openHelpModal()">📖 How to Use</button>
-        </div>
-        <div class="header-wave">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
-                <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84C1002.41,94.05,1084.13,95,1146.12,68.91c16.5-6.93,31.74-15.52,43.88-25.36V0Z" opacity=".5" class="shape-fill"></path>
-                <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
-            </svg>
+            
+            <div class="header-actions">
+                <span class="badge">Universal Edition v4.0</span>
+                <button class="how-to-use-btn" onclick="openHelpModal()">📖 How to Use</button>
+            </div>
         </div>
     </header>
 
@@ -244,35 +278,33 @@
             <div class="modal-scroll-area">
                 <p>This tool generates responsive HTML banners with smart Velocity logic to personalize student content in TargetConnect based on their tags.</p>
                 
-                <h3>1. Setting Audience Rules (AND logic, sequential check)</h3>
+                <h3>1. Setting Audience Rules (AND logic)</h3>
                 <p>This tool creates <strong>IF / ELSE IF / ELSE</strong> logic. This means rules are checked in order from top to bottom. The <strong>first rule</strong> that matches the user's tags is the only one they will see.</p>
                 <ul>
                     <li><strong>Target Tags:</strong> Type comma-separated tags into the field. This rule operates as an "AND" condition. For example, typing <code>Business School, Final Year</code> means the student must have <strong>ALL</strong> of those tags to see that banner.</li>
-                    <li><strong>Case-Insensitivity:</strong> Note: All tag checks are Case-insensitive (e.g., 'Business' matches 'business').</li>
+                    <li><strong>Case-Insensitivity:</strong> Note: All tag checks are case-insensitive (e.g., 'Business' matches 'business').</li>
                     <li><strong>Limits:</strong> While the tool can handle many rules, try limiting to ~15 distinct groups for optimal system performance in TargetConnect.</li>
                 </ul>
 
-                <h3>2. Choosing a Style & Colors (Case-Specific detail)</h3>
+                <h3>2. Choosing a Style & Colors</h3>
                 <p>Five distinct templates are available from the dropdown. Colors will auto-adapt to templates, but you can control them:</p>
                 <ul>
-                    <li><strong>Solid Background (Solid Color Block):</strong> Uses the Primary color for background, and auto-calculates text color.</li>
-                    <li><strong>Gradient (Smooth Gradient):</strong> Creates a sweep between Primary and Grad 2. A popular choice for a Case 2 modern feel. Tip: Glass-morphism effects apply on pills.</li>
-                    <li><strong>Minimal Outlined:</strong> Uses Primary color as a thick border, perfect for formal alerts.</li>
-                    <li><strong>Notice (Important Notice):</strong> Bold styling for urgent deadlines.</li>
+                    <li><strong>Modern:</strong> Clean box with soft shadows. Great for standard announcements.</li>
+                    <li><strong>Notice (Important Notice):</strong> Bold border styling for urgent deadlines.</li>
                     <li><strong>Professional:</strong> Crisp, squared edges for corporate/academic announcements.</li>
+                    <li><strong>Gradient:</strong> Creates a sweep between Primary and Grad 2. A popular choice for a modern feel. Tip: Glass-morphism effects apply on pills.</li>
                     <li><strong>Custom Image Banner:</strong> Paste a link to a graphical banner in the "Image URL" field. The tool will render the image responsively and place buttons underneath. Note: Leave headline blank to only show the image.</li>
-                    <li><strong>Automatic Accessibility Checker:</strong> This tool Case 2 automatically sets the 'Text' color (White or Black) based on the background color's contrast to guarantee accessibility standards.</li>
+                    <li><strong>Automatic Accessibility Checker:</strong> This tool automatically sets the 'Text' color (White or Black) based on the background color's contrast to guarantee accessibility standards.</li>
                 </ul>
 
-                <h3>3. The Fallback (Default Banner for personalizing)</h3>
-                <p>The **Fallback (Default Banner)** card is the final condition for personalizing content. Students who do not have any tags matching the dynamic rules above will see this standard banner. Leave the headline field blank if you prefer that nothing is shown by default.</p>
+                <h3>3. The Fallback (Default Banner)</h3>
+                <p>The <strong>Fallback (Default Banner)</strong> card is the final condition. Students who do not have any tags matching the dynamic rules above will see this standard banner. Leave the headline field blank if you prefer that nothing is shown by default.</p>
 
-                <h3>4. Buttons & Links (Leap Links & Custom)
-                </h3>
-                <p>You can add up to three buttons Case 4. For each, use the dropdown to select common, internal TargetConnect "Leap Links" like Appointments, Events, or Jobs. Select "Custom URL..." to type in your own internal page or external website link.</p>
+                <h3>4. Buttons & Links</h3>
+                <p>You can add up to three buttons. For each, use the dropdown to select common, internal TargetConnect "Leap Links" like Appointments, Events, or Jobs. Select "Custom URL..." to type in your own internal page or external website link.</p>
 
-                <h3>5. Getting and Using the Code (Case-Specific output)</h3>
-                <p>Once your rules are set, look at the **👀 Live Preview** to visualize how the logic functions for different student cases. Finally, click the **📋 Copy Velocity Code** button and paste the Case 5 entire output into the HTML Editor pane within a Custom Pane configuration on the TargetConnect staff dashboard.</p>
+                <h3>5. Getting and Using the Code</h3>
+                <p>Once your rules are set, look at the <strong>👀 Live Preview</strong> to visualize how the logic functions for different student cases. Finally, click the <strong>📋 Copy Velocity Code</strong> button and paste the entire output into the HTML Editor pane within a Custom Pane configuration on the TargetConnect staff dashboard.</p>
             </div>
         </div>
     </div>
@@ -565,13 +597,12 @@
         // --- Help Modal Logic ---
         function openHelpModal() {
             document.getElementById('help-modal').style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Prevents background scroll
+            document.body.style.overflow = 'hidden'; 
         }
         function closeHelpModal() {
             document.getElementById('help-modal').style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restores background scroll
+            document.body.style.overflow = 'auto'; 
         }
-        // Case 1 Closing logic: handle outside click and Escape key
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
                 const modal = document.getElementById('help-modal');
@@ -582,7 +613,6 @@
         });
         document.addEventListener('click', (event) => {
             const modal = document.getElementById('help-modal');
-            const modalContent = modal.querySelector('.modal-content');
             if (event.target === modal && modal.style.display === 'flex') {
                 closeHelpModal();
             }
