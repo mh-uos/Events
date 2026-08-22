@@ -1,0 +1,57 @@
+<svg width="210" height="297" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Highlight template preview">
+  <rect width="210" height="297" fill="#ffffff"/>
+  <!-- Header band (light primary tint) with top accent rule -->
+  <g>
+    <rect x="16" y="18" width="178" height="46" rx="4" fill="#0069fa" fill-opacity="0.08"/>
+    <rect x="16" y="18" width="178" height="3" rx="1.5" fill="#0069fa"/>
+    <text x="26" y="40" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="700" fill="#0069fa">Your Name</text>
+    <rect x="26" y="46" width="70" height="4" rx="2" fill="#94a3b8"/>
+    <rect x="26" y="54" width="150" height="3" rx="1.5" fill="#cbd5e1"/>
+  </g>
+  <!-- Section 1 -->
+  <g fill="#0069fa">
+    <rect x="16" y="82" width="46" height="5" rx="2.5"/>
+  </g>
+  <rect x="16" y="83" width="178" height="1" fill="#0069fa" fill-opacity="0.35"/>
+  <g fill="#e2e8f0">
+    <rect x="16" y="94" width="178" height="3.5" rx="1.75"/>
+    <rect x="16" y="101" width="178" height="3.5" rx="1.75"/>
+    <rect x="16" y="108" width="120" height="3.5" rx="1.75"/>
+  </g>
+  <!-- Section 2 -->
+  <g fill="#0069fa">
+    <rect x="16" y="126" width="54" height="5" rx="2.5"/>
+  </g>
+  <rect x="16" y="127" width="178" height="1" fill="#0069fa" fill-opacity="0.35"/>
+  <g fill="#cbd5e1">
+    <rect x="16" y="138" width="90" height="4" rx="2"/>
+  </g>
+  <g fill="#e2e8f0">
+    <rect x="16" y="146" width="178" height="3.5" rx="1.75"/>
+    <rect x="16" y="153" width="178" height="3.5" rx="1.75"/>
+    <rect x="16" y="160" width="140" height="3.5" rx="1.75"/>
+  </g>
+  <g fill="#cbd5e1">
+    <rect x="16" y="174" width="90" height="4" rx="2"/>
+  </g>
+  <g fill="#e2e8f0">
+    <rect x="16" y="182" width="178" height="3.5" rx="1.75"/>
+    <rect x="16" y="189" width="160" height="3.5" rx="1.75"/>
+  </g>
+  <!-- Section 3 -->
+  <g fill="#0069fa">
+    <rect x="16" y="206" width="40" height="5" rx="2.5"/>
+  </g>
+  <rect x="16" y="207" width="178" height="1" fill="#0069fa" fill-opacity="0.35"/>
+  <g fill="#e2e8f0">
+    <rect x="16" y="218" width="178" height="3.5" rx="1.75"/>
+    <rect x="16" y="225" width="150" height="3.5" rx="1.75"/>
+  </g>
+  <!-- Skill chips -->
+  <g fill="#0069fa" fill-opacity="0.12">
+    <rect x="16" y="238" width="34" height="9" rx="4.5"/>
+    <rect x="54" y="238" width="42" height="9" rx="4.5"/>
+    <rect x="100" y="238" width="30" height="9" rx="4.5"/>
+    <rect x="134" y="238" width="38" height="9" rx="4.5"/>
+  </g>
+</svg>
